@@ -1,0 +1,26 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - docker build -t python-diplom_ds-backend-img .
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+test-job:
+  stage: test
+  script:
+    - docker run --rm python-diplom_ds-backend-img python -m pytest -s -v tests_all.py
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+deploy-job:
+  stage: deploy
+  script:
+    - docker compose down
+    - docker compose up -d
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

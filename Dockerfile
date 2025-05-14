@@ -9,4 +9,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
-CMD ["/bin/bash","-c","cd /app && python main.py"]
+#CMD ["/bin/bash","-c","cd /app && python main.py"]

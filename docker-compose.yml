@@ -3,5 +3,6 @@ services:
     image: python-diplom_ds-backend-img:latest
     container_name: python-diplom_ds-backend
     ports:
-      - "192.168.30.197:80:8000"
+      - 80:8000
     restart: always
+    command: "python main.py"
