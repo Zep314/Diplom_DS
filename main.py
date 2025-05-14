@@ -13,7 +13,7 @@ async def answer(text: str):
 @app.get("/save", response_class=PlainTextResponse)
 async def save():
     """Возвращает строку 'SAVED!'"""
-    return "SAVED!"
+    return "SAVED123!"
 
 
 @app.post("/learn", response_class=PlainTextResponse)
