@@ -6,12 +6,17 @@ import pandas as pd
 import io
 import os
 
+# Инициализируем фреймворк
 app = FastAPI()
 
+# Токен для доступа в Hugging Face
 with open('./hf_key.txt', 'r') as f:
     hf_key = f.read().splitlines()[0]
 
+# Авторизуемся на Hugging Face
 login(token=hf_key)
+
+# Инициализируем LLM-модель
 qa = MistralQA()
 
 @app.get("/answer", response_class=PlainTextResponse)
@@ -67,22 +72,14 @@ async def learn(file: UploadFile = File(...)):
         contents = await file.read()
 
         # Создание pandas DataFrame из содержимого файла
+
         df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
 
-        # Вывод информации о датасете в консоль
-        print("\n" + "=" * 50)
-        print(f"Загружен файл: {file.filename}")
-        print(f"Размер датасета: {df.shape[0]} строк, {df.shape[1]} столбцов")
-        print("\nПервые 5 строк датасета:")
-        print(df.head())
-        print("=" * 50 + "\n")
+        qa.load_qa_from_df(df)
 
         # Возвращаем информацию о файле
         return JSONResponse(
             content={
-                "filename": file.filename,
-                "size": f"{df.shape[0]} rows, {df.shape[1]} columns",
-                "columns": list(df.columns),
                 "message": "Model fine-tuned."
             }
         )

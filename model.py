@@ -76,17 +76,20 @@ class MistralQA:
             self.knowledge_base[question.strip()].append(answer.strip())
             self._add_to_rag_context(f"Q: {question.strip()}\nA: {answer.strip()}")
 
-    def load_qa_from_csv(self, file_path: str):
-        """Загрузка пар вопрос-ответ из csv файла"""
-        df = pd.read_csv(file_path)
-
-        for index, row in tqdm(df.iterrows(), desc="Loading CSV", total=len(df)):
+    def load_qa_from_df(self, df: pd.Dataset):
+        """Загрузка пар вопрос-ответ из pandas Dataset"""
+        for index, row in tqdm(df.iterrows(), desc="Loading Dataset", total=len(df)):
             try:
                 self.knowledge_base[row['name'].strip() + '. ' + row['message'].strip()].append(row['answer'].strip())
                 self._add_to_rag_context(
                     f"Q: {row['name'].strip() + row['message'].strip()}\nA: {row['answer'].strip()}")
             except:
                 pass
+
+    def load_qa_from_csv(self, file_path: str):
+        """Загрузка пар вопрос-ответ из csv файла"""
+        df = pd.read_csv(file_path)
+        self.load_qa_from_df(df)
 
     def load_qa_from_parquet(self, file_path: str):
         df = pd.read_parquet(file_path)
