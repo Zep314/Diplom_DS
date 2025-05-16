@@ -19,7 +19,7 @@ login(token=hf_key)
 # Инициализируем LLM-модель
 qa = MistralQA()
 
-@app.get("/answer", response_class=PlainTextResponse)
+@app.get("/answer", response_class=JSONResponse)
 async def answer(question: str):
     """Принимаем строку с вопросом и возвращаем ответ"""
     prepromt = 'Ты - помощник, отвечающий на вопросы. Используй предоставленный контекст для точных ответов.' +\
@@ -33,7 +33,7 @@ async def answer(question: str):
            )
 
 
-@app.get("/save", response_class=PlainTextResponse)
+@app.get("/save", response_class=JSONResponse)
 async def save():
     """Сохраняем базу данных модели на диск"""
     qa.save()
@@ -43,7 +43,7 @@ async def save():
                 }
            )
 
-@app.get("/reload", response_class=PlainTextResponse)
+@app.get("/reload", response_class=JSONResponse)
 async def save():
     """Перезагружаем базу данных модели"""
     qa.load()
@@ -54,7 +54,7 @@ async def save():
            )
 
 
-@app.post("/learn", response_class=PlainTextResponse)
+@app.post("/learn", response_class=JSONResponse)
 async def learn(file: UploadFile = File(...)):
     """Запускаем дообучение на новых данных"""
     # Проверяем так:
@@ -93,7 +93,6 @@ async def learn(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
 
-    qa.load()
     if os.path.isdir('./my_mistral_model'):
         qa.load()
     else:
